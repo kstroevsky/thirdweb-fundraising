@@ -16,9 +16,17 @@ export interface ParsedCampaign {
   amountCollected: string | number;
   image: string;
   pId: number;
+  donators: string[]
 }
 
 export interface Donations {
   donator: string;
   donation: string;
+}
+
+export interface Achievement {
+  id: number,
+  title: string,
+  description: string,
+  success: boolean,
 }
