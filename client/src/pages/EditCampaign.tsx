@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import { useStateContext } from "../context";
@@ -8,17 +8,18 @@ import { CustomButton, FormField, Loader } from "../components";
 import { checkIfImage } from "../utils";
 import { Campaign } from "../types";
 
-const CreateCampaign = () => {
+const EditCampaign = () => {
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { createCampaign } = useStateContext();
+  const { editCampaign } = useStateContext();
   const [form, setForm] = useState<Campaign>({
     name: "",
-    title: "",
-    description: "",
-    target: "",
-    deadline: "",
-    image: "",
+    title: state.title,
+    description: state.description,
+    target: ethers.utils.formatEther(state.target._hex),
+    deadline: new Date(parseInt(state.deadline._hex, 16)).toISOString().slice(0, 10),
+    image: state.image,
   });
 
   const handleFormFieldChange = (fieldName: string, e: any) => {
@@ -31,10 +32,8 @@ const CreateCampaign = () => {
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
-        await createCampaign({
-          ...form,
-          target: ethers.utils.parseUnits(form.target, 18),
-        });
+        await editCampaign(state.pId, form.title, form.description, ethers.utils.parseUnits(form.target, 18), new Date(form.deadline).getTime(), form.image);
+
         setIsLoading(false);
         navigate("/");
       } else {
@@ -48,7 +47,7 @@ const CreateCampaign = () => {
       {isLoading && <Loader />}
       <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
         <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">
-          Start a Campaign
+          Edit a Campaign
         </h1>
       </div>
 
@@ -68,7 +67,7 @@ const CreateCampaign = () => {
 
         <FormField
           labelName="Story *"
-          placeholder="Write your story"
+          placeholder={'Write your story'}
           isTextArea
           value={form.description}
           handleChange={(e) => handleFormFieldChange("description", e)}
@@ -102,7 +101,7 @@ const CreateCampaign = () => {
         <div className="flex justify-center items-center mt-[40px]">
           <CustomButton
             btnType="submit"
-            title="Submit new campaign"
+            title="Edit campaign"
             styles="bg-[#1dc071]"
           />
         </div>
@@ -111,4 +110,4 @@ const CreateCampaign = () => {
   );
 };
 
-export default CreateCampaign;
+export default EditCampaign;

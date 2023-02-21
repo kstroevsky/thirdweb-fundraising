@@ -1,6 +1,7 @@
 import React from "react";
 
 import { thirdweb } from "../assets";
+import { useStateContext } from "../context";
 import { daysLeft } from "../utils";
 
 interface CardType {
@@ -23,12 +24,18 @@ const FundCard = ({
   image,
   handleClick,
 }: CardType) => {
+  const { address } = useStateContext();
+  const isOwner = owner === address;
+
   const remainingDays = daysLeft(deadline);
   return (
     <div
-      className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer"
+      className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer relative"
       onClick={handleClick}
     >
+
+      {isOwner && <p className="z-[100] absolute right-[15px] top-[10px] text-[red]">Edit</p>}
+
       <img
         src={image}
         alt="fund"

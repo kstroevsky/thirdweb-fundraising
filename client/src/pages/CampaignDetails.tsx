@@ -10,12 +10,16 @@ import { Donations } from "../types";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
+
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address } = useStateContext();
+  const { donate, getDonations, contract, address, getCampaign } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [currentCampaign, setCurrentCampaign] = useState<any[]>([]);
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState<Donations[] | []>([]);
+
+  const isOwner = state.owner === address;
 
   const remainingDays = daysLeft(state.deadline);
 
@@ -26,7 +30,10 @@ const CampaignDetails = () => {
   };
 
   useEffect(() => {
-    if (contract) fetchDonators();
+    if (contract) {
+      fetchDonators();
+      getCampaign(state.pId).then((campaign: any) => setCurrentCampaign(campaign));
+    };
   }, [contract, address]);
 
   const handleDonate = async () => {
@@ -35,6 +42,10 @@ const CampaignDetails = () => {
     navigate("/");
     setIsLoading(false);
   };
+
+  const handleOnEdit = () => {
+    navigate("/edit-campaign", { state: { ...currentCampaign, pId: state.pId } });
+  }
 
   return (
     <div>
@@ -77,6 +88,9 @@ const CampaignDetails = () => {
             <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
               Creator
             </h4>
+
+            {isOwner && <p onClick={handleOnEdit} className="w-min cursor-pointer text-[red]">Edit</p>}
+
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
               <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
                 <img

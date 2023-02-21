@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { Sidebar, Navbar } from "./components";
 import { Auth, CampaignDetails, CreateCampaign, Home, Profile } from "./pages";
+import EditCampaign from "./pages/EditCampaign";
 
 const App = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const App = () => {
               <Route path="/auth" element={<Auth />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/create-campaign" element={<CreateCampaign />} />
+              <Route path="/edit-campaign" element={<EditCampaign />} />
               <Route
                 path="/campaign-details/:id"
                 element={<CampaignDetails />}

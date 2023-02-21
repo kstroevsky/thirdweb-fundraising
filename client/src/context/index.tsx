@@ -18,7 +18,7 @@ export const StateContextProvider = ({ children }: any) => {
   // This is contract address, you can get it
   //from  https://thirdweb.com/ in your accoutn after deploying yourcontract
   const { contract } = useContract(
-    "0x41b966d9AB15E7346A5D38F44a03D6990D79d01e"
+    "0x3D460D25676dd88aD5134B8Ee891f3a1f031D3A1"
   );
   // i did a mistake
   const { mutateAsync: createCampaign } = useContractWrite(
@@ -33,6 +33,14 @@ export const StateContextProvider = ({ children }: any) => {
 
   const publishCampaign = async (form: Campaign) => {
     try {
+      // const data = await contract?.call("createCampaign", [
+      //   address, //owner
+      //   form.title, // title
+      //   form.description, //description
+      //   form.target, // target
+      //   new Date(form.deadline).getTime(), // deadline
+      //   form.image, // image
+      // ]);
       const data = await createCampaign([
         address, //owner
         form.title, // title
@@ -47,6 +55,28 @@ export const StateContextProvider = ({ children }: any) => {
       console.log("contract call failure", err);
     }
   };
+
+  const getCampaign = async (_id: number) => {
+    try {
+      const campaign = await contract?.call("getCompaign", _id);
+
+      return campaign;
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const editCampaign = async (_id: number, _title: string, _description: string, _target: bigint, _deadline: number, _image: string) => {
+    try {
+      const campaign = await contract?.call("editCampaigns", _id, _title, _description, _target, _deadline, _image);
+
+      return campaign;
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const getCompaigns = async () => {
     try {
@@ -130,6 +160,8 @@ export const StateContextProvider = ({ children }: any) => {
         getUserCampaigns,
         donate,
         getDonations,
+        getCampaign,
+        editCampaign
       }}
     >
       {children}
