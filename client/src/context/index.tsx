@@ -21,10 +21,10 @@ export const StateContextProvider = ({ children }: any) => {
     "0x3D460D25676dd88aD5134B8Ee891f3a1f031D3A1"
   );
   // i did a mistake
-  const { mutateAsync: createCampaign } = useContractWrite(
-    contract,
-    "createCompaigns"
-  );
+  // const { mutateAsync: createCampaign } = useContractWrite(
+  //   contract,
+  //   "createCompaigns"
+  // );
 
   const address = useAddress();
   const connect = useMetamask();
@@ -32,21 +32,27 @@ export const StateContextProvider = ({ children }: any) => {
   const login = useLogin();
 
   const publishCampaign = async (form: Campaign) => {
-    try {
-      const data = await createCampaign([
-        address, //owner
-        form.title, // title
-        form.description, //description
-        form.target, // target
-        new Date(form.deadline).getTime(), // deadline
-        form.image, // image
-      ]);
+    const {
+      title,
+      description,
+      target,
+      deadline,
+      image,
+    } = form
 
-      console.log("contract call succes", data);
-    } catch (err) {
-      console.log("contract call failure", err);
+    try {
+      const campaign = await contract?.call("createCompaigns", address, title,
+        description,
+        target,
+        new Date(deadline).getTime(),
+        image);
+
+      return campaign;
+
+    } catch (error) {
+      console.log(error);
     }
-  };
+  }
 
   const getCampaign = async (_id: number) => {
     try {

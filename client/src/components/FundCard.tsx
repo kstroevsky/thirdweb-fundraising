@@ -33,8 +33,6 @@ const FundCard = ({
       onClick={handleClick}
     >
 
-      {owner === address && <p className="z-[100] absolute right-[15px] top-[10px] text-[red]">Edit</p>}
-
       <img
         src={image}
         alt="fund"
