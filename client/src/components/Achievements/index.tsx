@@ -1,53 +1,49 @@
 import { useState, useEffect } from 'react';
 import { useStateContext } from "../../context";
 import { AcheiveItem } from './AcheiveItem';
+import { ParsedCampaign, Achievement } from '../../types';
 
 export const Achievements = () => {
-  const [campaignsData, setCampaignsData] = useState<any>(null);
+  const [campaignsData, setCampaignsData] = useState<null | ParsedCampaign[]>(null);
   const { address, contract } = useStateContext();
 
-  const donatedCampaigns = !campaignsData ? [] : campaignsData.filter((campaign: any) => campaign.donators.some((donator: string) => donator === address));
-  const donationCount = donatedCampaigns.length < 1 ? [] : donatedCampaigns.map((campaign: any) => campaign.donators.filter((donator: string) => donator === address)).flat();
+  const donatedCampaigns = campaignsData ? campaignsData.filter((campaign: ParsedCampaign) => campaign.donators.some((donator: string) => donator === address)) : [];
+  const donationsList: string[] | [] = donatedCampaigns.length < 1 ? [] : donatedCampaigns.map((campaign: ParsedCampaign) => campaign.donators.filter((donator: string) => donator === address)).flat();
 
-  const acheiveList = donationCount.length > 0 ? [
+  const acheiveList: Achievement[] | [] = donationsList.length > 0 ? [
     {
       id: 0,
       title: 'First donate',
       description: 'make you first donate',
-      success: donationCount.length >= 1,
+      success: donationsList.length >= 1,
     },
     {
       id: 1,
       title: 'Second donate',
       description: 'make you second donate',
-      success: donationCount.length >= 2,
+      success: donationsList.length >= 2,
     },
     {
       id: 2,
       title: 'Third donate',
       description: 'make you third donate',
-      success: donationCount.length >= 3,
+      success: donationsList.length >= 3,
     },
     {
       id: 3,
       title: 'Fourth donate',
       description: 'make you fourth donate',
-      success: donationCount.length >= 4,
+      success: donationsList.length >= 4,
     },
   ] : [];
 
-  const successfulAcheiveCount = acheiveList.length > 0 && acheiveList.filter((achieve: any) => achieve.success).length;
+  const successfulAcheiveCount = acheiveList.length > 0 && acheiveList.filter((achieve: Achievement) => achieve.success).length;
 
-
-  const getCampaigns = () => {
-    const campaigns = contract?.call("getCompaigns");
-
-    return campaigns;
-  }
+  const getCampaigns = () => contract?.call("getCompaigns");
 
   useEffect(() => {
     if (!campaignsData) {
-      getCampaigns().then((item: any) => setCampaignsData(item));
+      getCampaigns().then((item: ParsedCampaign[]) => setCampaignsData(item));
     }
 
   }, [])

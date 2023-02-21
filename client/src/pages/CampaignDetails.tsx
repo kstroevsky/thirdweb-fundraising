@@ -19,8 +19,6 @@ const CampaignDetails = () => {
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState<Donations[] | []>([]);
 
-  const isOwner = state.owner === address;
-
   const remainingDays = daysLeft(state.deadline);
 
   const fetchDonators = async () => {
@@ -89,7 +87,7 @@ const CampaignDetails = () => {
               Creator
             </h4>
 
-            {isOwner && <p onClick={handleOnEdit} className="w-min cursor-pointer text-[red]">Edit</p>}
+            {state.owner === address && <p onClick={handleOnEdit} className="w-min cursor-pointer text-[red]">Edit</p>}
 
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
               <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">

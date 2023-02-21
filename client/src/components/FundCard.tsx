@@ -25,7 +25,6 @@ const FundCard = ({
   handleClick,
 }: CardType) => {
   const { address } = useStateContext();
-  const isOwner = owner === address;
 
   const remainingDays = daysLeft(deadline);
   return (
@@ -34,7 +33,7 @@ const FundCard = ({
       onClick={handleClick}
     >
 
-      {isOwner && <p className="z-[100] absolute right-[15px] top-[10px] text-[red]">Edit</p>}
+      {owner === address && <p className="z-[100] absolute right-[15px] top-[10px] text-[red]">Edit</p>}
 
       <img
         src={image}

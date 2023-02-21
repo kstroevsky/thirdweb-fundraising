@@ -1,10 +1,10 @@
-interface achieveProps {
+interface AchieveProps {
   title: string,
   description: string,
   status: boolean
 }
 
-export const AcheiveItem: React.FC<achieveProps> = ({ title, description, status }) => {
+export const AcheiveItem: React.FC<AchieveProps> = ({ title, description, status }) => {
   return (
     <div className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer flex flex-col p-4">
       <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">{title}</h3>
