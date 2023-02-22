@@ -5,7 +5,6 @@ import {
   useLogout,
   useContract,
   useMetamask,
-  useContractWrite,
   useLogin,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
@@ -17,14 +16,11 @@ const StateContext = createContext<any>("");
 export const StateContextProvider = ({ children }: any) => {
   // This is contract address, you can get it
   //from  https://thirdweb.com/ in your accoutn after deploying yourcontract
+  const contractOwner = '0x3D460D25676dd88aD5134B8Ee891f3a1f031D3A1'
+
   const { contract } = useContract(
-    "0x3D460D25676dd88aD5134B8Ee891f3a1f031D3A1"
+    contractOwner
   );
-  // i did a mistake
-  // const { mutateAsync: createCampaign } = useContractWrite(
-  //   contract,
-  //   "createCompaigns"
-  // );
 
   const address = useAddress();
   const connect = useMetamask();
@@ -48,6 +44,15 @@ export const StateContextProvider = ({ children }: any) => {
         image);
 
       return campaign;
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteCampaign = async (_id: number) => {
+    try {
+      await contract?.call("deleteCompaign", _id)
 
     } catch (error) {
       console.log(error);
@@ -149,11 +154,13 @@ export const StateContextProvider = ({ children }: any) => {
   return (
     <StateContext.Provider
       value={{
+        contractOwner,
         address,
         logout,
         login,
         contract,
         connect,
+        deleteCampaign,
         createCampaign: publishCampaign,
         getCompaigns,
         getUserCampaigns,
