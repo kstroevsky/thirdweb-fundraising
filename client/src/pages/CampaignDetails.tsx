@@ -51,10 +51,14 @@ const CampaignDetails = () => {
     setIsDeleting(true);
   }
 
+  const handleOnClose = () => {
+    setIsDeleting(false);
+  }
+
   return (
     <div>
       {isLoading && <Loader />}
-      {isDeleting && <DeleteModal pId={state.pId} />}
+      {isDeleting && <DeleteModal handleOnClose={handleOnClose} pId={state.pId} />}
       <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
         <div className="flex-1 flex-col">
           <img

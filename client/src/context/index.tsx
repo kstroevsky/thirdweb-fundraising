@@ -16,11 +16,14 @@ const StateContext = createContext<any>("");
 export const StateContextProvider = ({ children }: any) => {
   // This is contract address, you can get it
   //from  https://thirdweb.com/ in your accoutn after deploying yourcontract
-  const contractOwner = '0x3D460D25676dd88aD5134B8Ee891f3a1f031D3A1'
 
   const { contract } = useContract(
-    contractOwner
+    '0x159179dCd9272f845eD2d3bba3843982A772671b'
   );
+
+
+  console.log(contract);
+  
 
   const address = useAddress();
   const connect = useMetamask();
@@ -52,8 +55,9 @@ export const StateContextProvider = ({ children }: any) => {
 
   const deleteCampaign = async (_id: number) => {
     try {
-      await contract?.call("deleteCompaign", _id)
+      const campaigns = await contract?.call("deleteCompaign", _id);
 
+      return campaigns;
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +105,7 @@ export const StateContextProvider = ({ children }: any) => {
         })
       );
 
-      return parsedCampaings;
+      return parsedCampaings.filter((item: ParsedCampaign) => item.title.length > 0);
     } catch (err) {
       console.log("contract call failure", err);
     }
@@ -154,7 +158,6 @@ export const StateContextProvider = ({ children }: any) => {
   return (
     <StateContext.Provider
       value={{
-        contractOwner,
         address,
         logout,
         login,
