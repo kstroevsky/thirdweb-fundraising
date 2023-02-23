@@ -7,14 +7,16 @@ import { CountBox, CustomButton, Loader } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { thirdweb } from "../assets";
 import { Donations } from "../types";
+import { DeleteModal } from "../components/Modal/Delete";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
 
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address, getCampaign } = useStateContext();
+  const { donate, getDonations, contract, address, getCampaign, contractOwner, deleteCampaign } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
   const [currentCampaign, setCurrentCampaign] = useState<any[]>([]);
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState<Donations[] | []>([]);
@@ -45,10 +47,18 @@ const CampaignDetails = () => {
     navigate("/edit-campaign", { state: { ...currentCampaign, pId: state.pId } });
   }
 
+  const handleOnDelete = () => {
+    setIsDeleting(true);
+  }
+
+  const handleOnClose = () => {
+    setIsDeleting(false);
+  }
+
   return (
     <div>
       {isLoading && <Loader />}
-
+      {isDeleting && <DeleteModal handleOnClose={handleOnClose} pId={state.pId} />}
       <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
         <div className="flex-1 flex-col">
           <img
@@ -88,6 +98,7 @@ const CampaignDetails = () => {
             </h4>
 
             {state.owner === address && <p onClick={handleOnEdit} className="w-min cursor-pointer text-[red]">Edit</p>}
+            {(state.owner === address) && <p onClick={handleOnDelete} className="w-min cursor-pointer text-[red]">Delete</p>}
 
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
               <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">

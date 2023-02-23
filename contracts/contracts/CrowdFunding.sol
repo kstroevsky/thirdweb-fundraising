@@ -46,6 +46,10 @@ contract CrowdFunding {
         return numberOfCompaigns - 1;
     }
 
+    function deleteCompaign(uint256 _id) public {
+        delete campaigns[_id];
+    }
+
     function donateToCompaign(uint256 _id) public payable {
         uint256 amount = msg.value;
 
